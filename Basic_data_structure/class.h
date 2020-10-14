@@ -39,7 +39,6 @@ public:
 	}
 };
 
-
 // 链表
 
 class Link_Node {
@@ -48,6 +47,7 @@ private:
 	Link_Node* tailer;
 	int context;
 public:
+	Link_Node(){}
 //	~Link_Node() {
 //		cout << "DELETE LINK NODE :"<< context << endl;
 //	}
@@ -55,22 +55,22 @@ public:
 	Link_Node(Link_Node* front_node, Link_Node* rear_node, int node_context)
 		:header(front_node),tailer(rear_node),context(node_context){}
 
-	Link_Node* Front() const{
+	virtual Link_Node* Front() const{
 		return header;
 	}
-	Link_Node* Rear() const {
+	virtual Link_Node* Rear() const {
 		return tailer;
 	}
 
-	void Set_front(Link_Node* ptr) {
+	virtual void Set_front(Link_Node* ptr) {
 		header = ptr;
 	}
 
-	void Set_rear(Link_Node* ptr) {
+	virtual void Set_rear(Link_Node* ptr) {
 		tailer = ptr;
 	}
 
-	int Context() const {
+	virtual int Context() const {
 		return context;
 	}
 
@@ -78,14 +78,14 @@ public:
 };
 
 // 双向链表
-class Singly_linked_list {
+class Linked_list {
 protected:
 	// 哨兵
 	Link_Node* Sentinel;
 	// 链表最先插入的元素
 	Link_Node* Currently_ptr;
 public:
-	Singly_linked_list() 
+	Linked_list()
 	:Sentinel(new Link_Node(nullptr, nullptr, -1)),Currently_ptr(Sentinel){
 	}
 
@@ -128,7 +128,7 @@ public:
 	}
 	
 	// 根据内容删除 首先调用搜索
-	void Delete(int context) {
+	virtual void Delete(int& context) {
 		Link_Node* search_result = Search(context);
 		if (search_result == nullptr) {
 			cout << "NO SUCN NODE IN LINK LIST !" << endl;
@@ -167,9 +167,9 @@ public:
 };
 
 // 队列 先进先出
-class Queue:public Singly_linked_list {
+class Queue:public Linked_list {
 public:
-	Queue():Singly_linked_list(){}
+	Queue():Linked_list(){}
 
 	// 入队
 	void Enqueue(int context) {
