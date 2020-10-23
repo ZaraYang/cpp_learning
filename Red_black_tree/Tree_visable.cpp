@@ -14,9 +14,6 @@ string Draw_limb(Node* ptr) {
 	if (ptr->Father_node->Father_node == nullptr) {
 		return("Root_Node:" + to_string(ptr->Key_word));
 	}
-	else if (ptr->Father_node == nullptr) {
-		return("Sentinel");
-	}
 	else if (ptr->Node_color == Red) {
 		return("Red_Node:"+ to_string(ptr->Key_word));
 	}

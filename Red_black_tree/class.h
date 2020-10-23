@@ -146,9 +146,140 @@ public:
 		}
 		Root->Node_color = Black;
 	}
+	// 搜索树中的节点
+	Node* RB_search(int& k) {
+		Node* node_buffer = Root;
+		while (node_buffer != Sentinel) {
+			if (node_buffer->Key_word == k) { return node_buffer; }
+			else if (k < node_buffer->Key_word) {
+				node_buffer = node_buffer->Son_nodes[Left];
+			}
+			else {
+				node_buffer = node_buffer->Son_nodes[Right];
+			}
+		}
+		return nullptr;
+	}
+	// 将一棵子树换为另一颗
+	void RB_transplant(Node* a, Node* b) {
+		if (a == Root) { b->Father_node = Sentinel; Root = b; }
+		else if (a == a->Father_node->Son_nodes[Left]) {
+			a->Father_node->Son_nodes[Left] = b;
+		}
+		else {
+			a->Father_node->Son_nodes[Right] = b;
+		}
+		if (b != Sentinel) {
+			b->Father_node = a->Father_node;
+		}
+	}
+	// 返回树中最小的节点
+	Node* RB_minimum(Node* r) {
+		Node* node_buffer = r;
+		while (node_buffer->Son_nodes[Left] != Sentinel)
+		{
+			node_buffer = node_buffer->Son_nodes[Left];
+		}
+		return node_buffer;
+	}
+	// 删除树中的节点
+	void RB_delete(Node* node) {
+		int orginal_color = node->Node_color;
+		Node* fix_up_node;
+		if (node->Son_nodes[Left] == Sentinel) {
+			fix_up_node = node->Son_nodes[Right];
+			RB_transplant(node, node->Son_nodes[Right]);
+		}
+		else if (node->Son_nodes[Right] == Sentinel) {
+			fix_up_node = node->Son_nodes[Left];
+			RB_transplant(node, node->Son_nodes[Left]);
+		}
+		else {
+			Node* node_buffer = RB_minimum(node->Son_nodes[Right]);
+			orginal_color = node_buffer->Node_color;
+			fix_up_node = node_buffer->Son_nodes[Right];
+			if (node_buffer->Father_node != node) {
+				RB_transplant(node_buffer, node_buffer->Son_nodes[Right]);
+				node_buffer->Son_nodes[Right] = node->Son_nodes[Right];
+				if (node->Son_nodes[Right] != Sentinel) { node->Son_nodes[Right]->Father_node = node_buffer; }
+			}
+			RB_transplant(node, node_buffer);
+			node_buffer->Son_nodes[Left] = node->Son_nodes[Left];
+			if (node->Son_nodes[Left] != Sentinel) { node->Son_nodes[Left]->Father_node = node_buffer; }
+			node_buffer->Node_color = node->Node_color;
+		}
+		
+		if (orginal_color == Black) {
+			// CALL-DELETE-FIXUP
+			fix_up_node->Father_node = node->Father_node;
+			RB_delete_fix_up(fix_up_node);
+			fix_up_node->Father_node = nullptr;
+		}
+		delete node;
+	}
+	// 根据关键值删除节点
+	void RB_delete(int& k) {
+		RB_delete(RB_search(k));
+	}
+	// 在删除时维护红黑树规则
+	void RB_delete_fix_up(Node* node) {
+		while (node != Root && node->Node_color == Black) {
+			if (node == node->Father_node->Son_nodes[Left]){
+				Node* sibling_node = node->Father_node->Son_nodes[Right];
+				if (sibling_node->Node_color == Red) {
+					sibling_node->Node_color = Black;
+					node->Father_node->Node_color = Red;
+					Left_rotate(node->Father_node);
+					sibling_node = node->Father_node->Son_nodes[Right];
+				}
+				if (sibling_node->Son_nodes[Left]->Node_color == Black && sibling_node->Son_nodes[Right]->Node_color == Black) {
+					sibling_node->Node_color = Red;
+					node = node->Father_node;
+				}
+				else {
+					if (sibling_node->Son_nodes[Right]->Node_color == Black) {
+						sibling_node->Son_nodes[Left]->Node_color = Black;
+						sibling_node->Node_color = Red;
+						Right_rotate(sibling_node);
+					}
+					sibling_node->Node_color = node->Father_node->Node_color;
+					node->Father_node->Node_color = Black;
+					sibling_node->Son_nodes[Right]->Node_color = Black;
+					Left_rotate(node->Father_node);
+					node = Root;
+				}
+			}
+			else {
+				Node* sibling_node = node->Father_node->Son_nodes[Left];
+				if (sibling_node->Node_color == Red) {
+					sibling_node->Node_color = Black;
+					node->Father_node->Node_color = Red;
+					Right_rotate(node->Father_node);
+					sibling_node = node->Father_node->Son_nodes[Left];
+				}
+				if (sibling_node->Son_nodes[Left]->Node_color == Black && sibling_node->Son_nodes[Right]->Node_color == Black) {
+					sibling_node->Node_color = Red;
+					node = node->Father_node;
+				}
+				else {
+					if (sibling_node->Son_nodes[Left]->Node_color == Black) {
+						sibling_node->Son_nodes[Right]->Node_color = Black;
+						sibling_node->Node_color = Red;
+						Left_rotate(sibling_node);
+						sibling_node = node->Father_node->Son_nodes[Left];
+					}
+					sibling_node->Node_color = node->Father_node->Node_color;
+					node->Father_node->Node_color = Black;
+					sibling_node->Son_nodes[Left]->Node_color = Black;
+					Right_rotate(node->Father_node);
+					node = Root;
+				}
+			}
+		}
+		node->Node_color = Black;
+	}
 	// 返回根节点
 	Node* Tree_root() { return Root; }
 	// 返回哨兵
 	Node* Tree_sentinel() { return Sentinel; }
-
 };
