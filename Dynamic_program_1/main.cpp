@@ -1,7 +1,9 @@
 #include"include.h"
 #include"class.h"
 
-// ×Ô¶¥ÏòÏÂÊµÏÖµÄÇĞ¸î×îÓÅ·½°¸£¬ÓĞ´óÁ¿µÄÖØ¸´¼ÆËã,·´¸´Çó½âÏàÍ¬µÄ×ÓÎÊÌâ
+
+// è¿™éƒ¨åˆ†å®ç°çš„æ˜¯ç®—æ³•å¯¼è®ºä¸­åŠ¨æ€è§„åˆ’éƒ¨åˆ†çš„é’¢æ¡åˆ‡å‰²é—®é¢˜
+// è‡ªé¡¶å‘ä¸‹å®ç°çš„åˆ‡å‰²æœ€ä¼˜æ–¹æ¡ˆï¼Œæœ‰å¤§é‡çš„é‡å¤è®¡ç®—,åå¤æ±‚è§£ç›¸åŒçš„å­é—®é¢˜
 int Cut_rod(map<int, int> price_table, int length) {
 	if (length == 0) {
 		return(0);
@@ -13,7 +15,7 @@ int Cut_rod(map<int, int> price_table, int length) {
 	}
 	return(price);
 }
-// ×Ô¶¥ÏòÏÂµÄÇĞ¸î£¬µ«ÊÇ½«ÒÑ¾­Ëã¹ıµÄ½á¹û´æÔÚÁËvectorÖĞ£¬±ÜÃâÖØ¸´¼ÆËã
+// è‡ªé¡¶å‘ä¸‹çš„åˆ‡å‰²ï¼Œä½†æ˜¯å°†å·²ç»ç®—è¿‡çš„ç»“æœå­˜åœ¨äº†vectorä¸­ï¼Œé¿å…é‡å¤è®¡ç®—
 int Cut_rod_aux(map<int, int> price_table, int length, vector<int>& memory) {
 	if (memory[length] >= 0) {
 		return(memory[length]);
@@ -39,7 +41,7 @@ int Cut_rod_with_memoized(map<int, int> price_table, int length) {
 	int result = Cut_rod_aux(price_table, length, memory);
 	return(result);
 }
-// ×ÔÏÂ¶øÉÏµÄÇĞ¸î
+// è‡ªä¸‹è€Œä¸Šçš„åˆ‡å‰²
 int Bottom_up_cut_rod(map<int, int> price_table, int length) {
 	vector<int> memory;
 	memory.push_back(0);
@@ -52,7 +54,7 @@ int Bottom_up_cut_rod(map<int, int> price_table, int length) {
 	}
 	return(memory[length]);
 }
-// ±£´æÇĞ¸î·½°¸µÄ×ÔÏÂ¶øÉÏÇĞ¸î
+// ä¿å­˜åˆ‡å‰²æ–¹æ¡ˆçš„è‡ªä¸‹è€Œä¸Šåˆ‡å‰²
 array<int, 2> Extend_bottom_up_cut_rod(map<int, int> price_table,int length) {
 	vector<int> memory, strategy;
 	memory.push_back(0);
